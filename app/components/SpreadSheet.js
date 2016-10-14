@@ -9,16 +9,13 @@ var Spreadsheet = React.createClass({
       editing: null
     }
   },
-  addInput: function(evt) {
-    evt.preventDefault();
-    console.log(this.input.value)
-  },
   edit: function (i, j) {
     this.setState({
       editing: [i, j],
     }, () => this.input.focus())
   },
-  updateCell: function(i, j) {
+  updateCell: function(evt, i, j) {
+    evt.preventDefault()
     var {rows} = this.state
     rows[j][i] = this.input.value
     this.setState({
@@ -27,6 +24,12 @@ var Spreadsheet = React.createClass({
     })
   },
   render: function () {
+    var style = {
+      border: 'none',
+      boxShadow: 'none',
+      outlineWidth: 0,
+      boxSizing: 'border-box',
+    }
     return (
       <div>Spreadsheet
         <table className="table table-striped table-hover table-bordered">
@@ -47,8 +50,8 @@ var Spreadsheet = React.createClass({
                   <td key={i}
                       onMouseUp={() => this.edit(i, j)}>
                   { this.state.editing && this.state.editing[0] === i && this.state.editing[1] === j
-                    ? <form onSubmit={(e) => this.addInput(e)}>
-                        <input defaultValue={cell} onBlur={() => this.updateCell(i, j)} ref={(cellContent) => {this.input = cellContent}} />
+                    ? <form onSubmit={(e) => this.updateCell(e, i, j)}>
+                        <input defaultValue={cell} style={style} onBlur={() => this.updateCell(i, j)} ref={(cellContent) => {this.input = cellContent}} />
                       </form>
                     : cell } </td>
                   ))}
